@@ -89,11 +89,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'analitics',
-        'USER': 'postgres',
-        'PASSWORD': '111111',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': '*',
+        'USER': '*',
+        'PASSWORD': '*',
+        'HOST': '*',
+        'PORT': '*',
     }
 }
 
@@ -149,4 +149,4 @@ STATIC_ROOT = BASE_DIR+'/static/'
 #BACKGROUND_TASK_RUN_ASYNC = True
 
 GOOGLE_API_RESTAURANT = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
-GOOGLE_KEY = 'AIzaSyCDvjQYoCmk6_DJSF7liYmoPF9I3MClEPY'
+GOOGLE_KEY = '*'
