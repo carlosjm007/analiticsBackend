@@ -105,7 +105,7 @@ venv.bak/
 
 #Carpeta estatica
 analitics/static/
-*.json
+jsons/*.json
 
 #Archivo de configuracion de django
 settings.py
