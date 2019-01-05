@@ -19,7 +19,7 @@ def obtener_datos():
 @background()
 def obtener_trends():
 	palabras = []
-	restaurant = Tienda.objects.all().order_by('last_trend').first()
+	restaurant = Tienda.objects.all().order_by('-last_trend').first()
 	#restaurant = Tienda.objects.get(id=1254)
 	print("%s - obtener_trends"%restaurant.nombre)
 	menu = Productos.objects.filter(tienda = restaurant)
@@ -75,7 +75,7 @@ def ponderaciones():
 	if (delta.seconds < 100):
 		print(delta.seconds)
 		return None
-	restaurant = Tienda.objects.filter(ciudad=city, disponible=True).order_by('-last_trend')
+	restaurant = Tienda.objects.filter(ciudad=city, disponible=True).order_by('last_trend')
 	if restaurant == None:
 		return None
 	datos = {}
