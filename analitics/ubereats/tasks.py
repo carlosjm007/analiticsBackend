@@ -44,7 +44,7 @@ def get_complement_information():
 	calificacion = 0.0
 	nombre_google = ""
 	direccion_google = ""
-	restaurant = Tienda.objects.all().order_by('last_google').first()
+	restaurant = Tienda.objects.all().order_by('-last_google').first()
 	if restaurant == None:
 		return None
 	print("%s - get_complement_information"%restaurant.nombre)
@@ -75,7 +75,7 @@ def ponderaciones():
 	if (delta.seconds < 100):
 		print(delta.seconds)
 		return None
-	restaurant = Tienda.objects.filter(ciudad=city, disponible=True).order_by('last_trend')
+	restaurant = Tienda.objects.filter(ciudad=city, disponible=True).order_by('-last_trend')
 	if restaurant == None:
 		return None
 	datos = {}
