@@ -99,8 +99,8 @@ def ponderaciones():
 	for s in store:
 		u = {}
 		u["position"] = {
-			"lat":city.latitud,
-			"lng":city.longitud
+			"lat":s.tienda.latitud,
+			"lng":s.tienda.longitud
 		}
 		u["lista"] = s.tienda.ubicacion_lista
 		if u["lista"] > datos["maximo_lista"]:
