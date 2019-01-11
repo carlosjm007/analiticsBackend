@@ -19,6 +19,6 @@ from django.conf.urls import url, include
 
 urlpatterns = [
 	path('admin/', admin.site.urls),
-	path('/', include('main.urls')),
+	path('main/', include('main.urls')),
 	path('ubereats/', include('ubereats.urls')),
 ]
