@@ -1,8 +1,9 @@
 from django.db import models
-from main.models import Ciudad
+from main.models import Ciudad, Pais
 from decimal import Decimal
 import requests, json
 from ubereats.manager import *
+from django.conf import settings
 # Create your models here.
 
 class HourDay(models.Model):
@@ -34,6 +35,14 @@ class PaginaCiudad(Ciudad):
 	actualizado = models.DateTimeField(auto_now=True)
 	def __str__(self):
 		return "%s" %(self.nombre)
+	def save(self, *args, **kwargs):
+		super(PaginaCiudad, self).save(*args, **kwargs)
+		from main.serializers import PaisSerializer
+		paises = Pais.objects.all()
+		serializer = PaisSerializer(instance=paises, many=True)
+		with open('%s/static/ubereats/jsons/%s_paises.json'%(settings.BASE_DIR,self.pk), 'w') as f:
+			json.dump(serializer.data, f)
+			
 	class Meta:
 		verbose_name = "Pagina por ciudad"
 		verbose_name_plural = "Paginas por ciudad"
