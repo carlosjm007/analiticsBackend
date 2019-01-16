@@ -40,7 +40,7 @@ class PaginaCiudad(Ciudad):
 		from main.serializers import PaisSerializer
 		paises = Pais.objects.all()
 		serializer = PaisSerializer(instance=paises, many=True)
-		with open('%s/static/ubereats/jsons/%s_paises.json'%(settings.BASE_DIR,self.pk), 'w') as f:
+		with open('%s/static/ubereats/jsons/paises.json'%(settings.BASE_DIR), 'w') as f:
 			json.dump(serializer.data, f)
 			
 	class Meta:
