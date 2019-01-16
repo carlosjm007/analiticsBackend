@@ -8,7 +8,7 @@ from django.utils import timezone
 
 @background()
 def obtener_datos():
-	city = Ciudad.objects.all().first()
+	city = PaginaCiudad.objects.all().order_by('-actualizado').first()
 	client = requests.session()
 	pagina_ciudad, client = PaginaCiudad.objects.get_csrftoken(client, city)
 	the_url, client = Urls.objects.get_data(client, pagina_ciudad)
