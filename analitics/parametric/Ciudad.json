@@ -1,1 +1,1 @@
-[{"model": "main.ciudad", "pk": 1, "fields": {"nombre": "Auckland", "latitud": -36.8505351, "longitud": 174.7646794, "pais": 1}}]
+[{"model": "main.ciudad", "pk": 1, "fields": {"nombre": "Auckland", "latitud": -36.8505351, "longitud": 174.7646794, "pais": 1}}, {"model": "main.ciudad", "pk": 5, "fields": {"nombre": "Bogot\u00e1", "latitud": 4.675185, "longitud": -74.069918, "pais": 2}}]

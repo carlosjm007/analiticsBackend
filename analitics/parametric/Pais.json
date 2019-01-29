@@ -1,1 +1,1 @@
-[{"model": "main.pais", "pk": 1, "fields": {"nombre": "New Zealand"}}]
+[{"model": "main.pais", "pk": 1, "fields": {"nombre": "New Zealand"}}, {"model": "main.pais", "pk": 2, "fields": {"nombre": "Colombia"}}]
