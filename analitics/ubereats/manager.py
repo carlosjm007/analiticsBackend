@@ -1,6 +1,8 @@
 from django.db import models
 import json, requests, time
 from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Q
 
 class PaginaCiudadManager(models.Manager):
 	def get_csrftoken(self, client, ciudad):
@@ -19,6 +21,15 @@ class PaginaCiudadManager(models.Manager):
 		url_pagina.save()
 		return url_pagina, client
 
+	def get_firts_city_updated(self):
+		#delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=15)
+		delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
+		ciudades = self.exclude(actualizado__gte=delta_15_minutes)
+		if len(ciudades) > 0:
+			return ciudades.first()
+		else:
+			return False
+
 class UrlManager(models.Manager):
 	def get_data(self, client, pagina_ciudad):
 		headers={
@@ -32,6 +43,7 @@ class UrlManager(models.Manager):
 				url.data = json.dumps(r.json()["marketplace"]["feed"]["feedItems"])
 			else:
 				url.data = json.dumps(r.json()["feed"]["feedItems"])
+			url.mapeado = False
 			url.save()
 		return self.filter(pagina_ciudad = pagina_ciudad), client
 
@@ -72,6 +84,22 @@ class TiendaManager(models.Manager):
 					index = index + 1
 
 		return self.filter(ciudad = pagina_ciudad)
+
+	def get_firts_restaurant_updated(self):
+		delta_30_days = datetime.now(tz=timezone.utc) - timedelta(days=30)
+		restaurants = self.exclude(Q(last_google__gte=delta_30_days) | ~Q(last_google=None))
+		if len(restaurants) > 0:
+			return restaurants.first()
+		else:
+			return False
+
+	def get_firts_trend_updated(self):
+		delta_6_days = datetime.now(tz=timezone.utc) - timedelta(days=6)
+		restaurants = self.exclude(Q(last_trend__gte=delta_6_days) | ~Q(last_trend=None))
+		if len(restaurants) > 0:
+			return restaurants.first()
+		else:
+			return False
 
 class ProductosManager(models.Manager):
 	def get_productos(self, tiendas):

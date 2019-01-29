@@ -55,6 +55,7 @@ class Urls(models.Model):
 	pageSize = models.CharField(max_length=15, null=True, blank=True)
 	request_payload = models.CharField(max_length=1000)
 	data = models.TextField(null=True, blank=True)
+	mapeado = models.BooleanField(default=True)	#Campo qu permite saber si la informacion capturada en data ya fue almacenada estructuralmente en las otras tablas
 	objects = UrlManager()
 	def __str__(self):
 		return "%s" %(self.pagina_ciudad.nombre)

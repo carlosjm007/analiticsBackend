@@ -6,20 +6,35 @@ from pytrends.request import TrendReq
 from django.conf import settings
 from django.utils import timezone
 
+
+####################################
+##	Consulta los restaurantes abiertos de ubereats.
+##	
+##	Tarea ejecutada cada 15seg.
 @background()
 def obtener_datos():
-	city = PaginaCiudad.objects.all().order_by('-actualizado').first()
+	city = PaginaCiudad.objects.get_firts_city_updated()
+	if city==False:
+		return None
 	client = requests.session()
 	pagina_ciudad, client = PaginaCiudad.objects.get_csrftoken(client, city)
 	the_url, client = Urls.objects.get_data(client, pagina_ciudad)
 	the_store = Tienda.objects.get_tienda(the_url, pagina_ciudad)
 	Productos.objects.get_productos(the_store)
-	print('obtener_datos')
+	ponderaciones(city)
+	print('Consulta los restaurantes abiertos de ubereats - %s'%city.nombre)
 
+
+####################################
+##	Consulta menu y restaurantes en google trends
+##	
+##	Tarea ejecutada cada 32seg.
 @background()
 def obtener_trends():
 	palabras = []
-	restaurant = Tienda.objects.all().order_by('-last_trend').first()
+	restaurant = Tienda.objects.get_firts_trend_updated()
+	if restaurant == False:
+		return None
 	#restaurant = Tienda.objects.get(id=1254)
 	print("%s - obtener_trends"%restaurant.nombre)
 	menu = Productos.objects.filter(tienda = restaurant)
@@ -37,6 +52,10 @@ def obtener_trends():
 	restaurant.last_trend = datetime.datetime.now(tz=timezone.utc)
 	restaurant.save()
 
+####################################
+##	Consulta de datos complementarios en api de lugares de google
+##	
+##	Tarea ejecutada cada 11seg.
 @background()
 def get_complement_information():
 	latitud = 0.0
@@ -44,15 +63,17 @@ def get_complement_information():
 	calificacion = 0.0
 	nombre_google = ""
 	direccion_google = ""
-	restaurant = Tienda.objects.all().order_by('-last_google').first()
-	if restaurant == None:
+	restaurant = Tienda.objects.get_firts_restaurant_updated()
+	if restaurant == False:
 		return None
-	print("%s - get_complement_information"%restaurant.nombre)
 	tienda_nombre = restaurant.nombre
 	tienda_nombre = tienda_nombre.replace(" ","+")
 	tienda_nombre = tienda_nombre.replace("&","and")
 	url = '%slocation=%s,%s&radius=5000&type=restaurant&keyword=%s&key=%s'%(settings.GOOGLE_API_RESTAURANT, restaurant.ciudad.latitud, restaurant.ciudad.longitud, tienda_nombre, settings.GOOGLE_KEY)
 	a = requests.get(url)
+	if(a.json()["status"]=='OVER_QUERY_LIMIT'):
+		print("OVER_QUERY_LIMIT")
+		return None
 	for ind, t in enumerate(a.json()["results"]):
 		if ind == 0:
 			latitud = t['geometry']['location']["lat"]
@@ -66,11 +87,10 @@ def get_complement_information():
 	restaurant.nombre_google = nombre_google
 	restaurant.direccion_google = direccion_google
 	restaurant.last_google = datetime.datetime.now(tz=timezone.utc)
+	print("%s - get_complement_information"%restaurant.latitud)
 	restaurant.save()
 
-@background()
-def ponderaciones():
-	city = PaginaCiudad.objects.all().order_by('-actualizado').first()
+def ponderaciones(city):
 	delta = datetime.datetime.now(tz=timezone.utc) - city.actualizado
 	if (delta.seconds < 100):
 		print(delta.seconds)
@@ -115,4 +135,3 @@ def ponderaciones():
 	with open('%s/static/ubereats/jsons/%s.json'%(settings.BASE_DIR,city.id), 'w') as f:
 		json.dump(datos, f)
 	city.save()
-	print(city.nombre)
