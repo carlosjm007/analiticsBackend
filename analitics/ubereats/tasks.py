@@ -95,7 +95,9 @@ def ponderaciones(city):
 	if (delta.seconds < 100):
 		print(delta.seconds)
 		return None
-	restaurant = Tienda.objects.filter(ciudad=city, disponible=True).order_by('last_trend')
+	restaurant = Tienda.objects.filter(
+		ciudad=city,
+		disponible=True).exclude(latitud=0.0, longitud=0.0).order_by('last_trend')
 	if restaurant == None:
 		return None
 	datos = {}
