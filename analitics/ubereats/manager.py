@@ -22,8 +22,8 @@ class PaginaCiudadManager(models.Manager):
 		return url_pagina, client
 
 	def get_firts_city_updated(self):
-		delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=15)
-		#delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
+		#delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=15)
+		delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
 		ciudades = self.exclude(actualizado__gte=delta_15_minutes)
 		if len(ciudades) > 0:
 			return ciudades.first()
@@ -59,6 +59,10 @@ class TiendaManager(models.Manager):
 					tienda_nombre = tienda_nombre.replace(" ","+")
 					tienda_nombre = tienda_nombre.replace("&","and")
 					tiendita = self.filter(uuid = i["uuid"])
+					try:
+						tipo_comida = json.dumps(i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["tagline"]["text"])
+					except Exception as e:
+						tipo_comida = json.dumps({})
 					if (len(tiendita) == 0):
 						self.create(
 							nombre = i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["title"]["text"],
@@ -69,7 +73,7 @@ class TiendaManager(models.Manager):
 							calificacion = 0,
 							disponible = str(i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["subtitle"]["text"]).find("Min") > 0,
 							ubicacion_lista = index,
-							tipo_comida = json.dumps(i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["tagline"]["text"]),
+							tipo_comida = tipo_comida,
 							nombre_google = '',
 							direccion_google = ''
 							)
@@ -79,7 +83,7 @@ class TiendaManager(models.Manager):
 							disponible = str(i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["subtitle"]["text"]).find("Min") > 0,
 							ciudad = u.pagina_ciudad,
 							ubicacion_lista = index,
-							tipo_comida = json.dumps(i["payload"]["storePayload"]["stateMapDisplayInfo"]["available"]["tagline"]["text"])
+							tipo_comida = tipo_comida
 							)
 					index = index + 1
 
