@@ -10,4 +10,4 @@ class PaisRequestedSerializer(serializers.ModelSerializer):
 class CiudadRequestedSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CiudadRequested
-		fields = ('id', 'nombre','pais')
+		fields = ('id', 'nombre','pais', 'like')

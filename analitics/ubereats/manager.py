@@ -142,11 +142,7 @@ class TiendaBusquedaManager(models.Manager):
 					day__day =	str(fecha_hora.weekday()),
 					tienda = restaurant
 				).update(busquedas=row[palabra])
-
-		'''
-		for name in list(data):
-			if name != 'isPartial':
-				producto = self.filter(producto__nombre=name, producto__tienda=restaurant)
-				if len(producto) == 0:
-					self.create()
-		'''
+'''
+class CiudadRequestedManager(models.Manager):
+	def increase_like(self, id):
+'''
