@@ -145,3 +145,28 @@ class TiendaBusqueda(models.Model):
 	class Meta:
 		verbose_name = "Busqueda por tienda"
 		verbose_name_plural = "Busquedas por tienda"
+
+class PaisRequested(models.Model):
+	nombre = models.CharField(max_length=255)
+	def __str__(self):
+		return "%s" %(self.nombre)
+	def save(self, *args, **kwargs):
+		super(PaisRequested, self).save(*args, **kwargs)
+		from ubereats.serializers import PaisRequestedSerializer
+		all_country = self.__class__.objects.all()
+		datos = PaisRequestedSerializer(all_country, many=True).data
+		with open('%s/static/ubereats/jsons/requested_countries.json'%(settings.BASE_DIR), 'w') as f:
+			json.dump(datos, f)
+	class Meta:
+		verbose_name = "Pais solicitado"
+		verbose_name_plural = "Paises solicitados"
+
+class CiudadRequested(models.Model):
+	nombre = models.CharField(max_length=255)
+	pais = models.ForeignKey(PaisRequested, on_delete=models.CASCADE)
+	like = models.IntegerField(default=0)
+	def __str__(self):
+		return "%s" %(self.nombre)
+	class Meta:
+		verbose_name = "Ciudad solicitada"
+		verbose_name_plural = "Ciudades solicitados"

@@ -2,6 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from ubereats.models import *
+from import_export.admin import ImportExportActionModelAdmin
 
 @admin.register(PaginaCiudad)
 class PaginaCiudadAdmin(admin.ModelAdmin):
@@ -33,4 +34,12 @@ class ProductosAdmin(admin.ModelAdmin):
 
 @admin.register(TiendaBusqueda)
 class ProductosAdmin(admin.ModelAdmin):
+	pass
+
+@admin.register(PaisRequested)
+class ProductosAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
+	pass
+
+@admin.register(CiudadRequested)
+class ProductosAdmin(ImportExportActionModelAdmin, admin.ModelAdmin):
 	pass

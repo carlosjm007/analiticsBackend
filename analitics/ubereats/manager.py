@@ -22,8 +22,8 @@ class PaginaCiudadManager(models.Manager):
 		return url_pagina, client
 
 	def get_firts_city_updated(self):
-		#delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=15)
-		delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
+		delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=15)
+		#delta_15_minutes = datetime.now(tz=timezone.utc) - timedelta(minutes=1)
 		ciudades = self.exclude(actualizado__gte=delta_15_minutes)
 		if len(ciudades) > 0:
 			return ciudades.first()

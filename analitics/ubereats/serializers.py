@@ -1,14 +1,13 @@
-'''
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from ubereats.models import *
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class PaisRequestedSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = User
-		fields = ('url', 'username', 'email', 'groups')
+		model = PaisRequested
+		fields = ('id', 'nombre')
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class CiudadRequestedSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = Group
-		fields = ('url', 'name')
-'''
+		model = CiudadRequested
+		fields = ('id', 'nombre','pais')

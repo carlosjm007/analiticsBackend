@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 	'background_task',
 	'main',
 	'ubereats',
+	'import_export',
 ]
 
 MIDDLEWARE = [
