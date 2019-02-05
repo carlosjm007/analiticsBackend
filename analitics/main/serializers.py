@@ -17,5 +17,5 @@ class PaisSerializer(serializers.ModelSerializer):
 		return serializer.data
 
 	class Meta:
-		model = Ciudad
+		model = Pais
 		fields = ('id', 'nombre', 'ciudad')

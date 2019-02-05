@@ -1,11 +1,10 @@
 from background_task import background
 from ubereats.models import *
 from main.models import *
-import sys, requests, json, datetime
+import sys, requests, json, datetime, urllib3
 from pytrends.request import TrendReq
 from django.conf import settings
 from django.utils import timezone
-
 
 ####################################
 ##	Consulta los restaurantes abiertos de ubereats.
@@ -88,6 +87,34 @@ def get_complement_information():
 	restaurant.direccion_google = direccion_google
 	restaurant.last_google = datetime.datetime.now(tz=timezone.utc)
 	print("%s - get_complement_information"%restaurant.latitud)
+	restaurant.save()
+
+####################################
+##	Consulta de datos complementarios en api de lugares de google
+##	
+##	Tarea ejecutada cada 11seg.
+@background()
+def get_complement_information_openstreetmap():
+	latitud = 0.0
+	longitud = 0.0
+	restaurant = Tienda.objects.get_firts_restaurant_updated()
+	if restaurant == False:
+		return None
+	restaurant.last_google = datetime.datetime.now(tz=timezone.utc)
+	restaurant.save()
+	variables = urllib3.request.urlencode({"q" : "%s %s %s"%(restaurant.nombre, restaurant.ciudad.nombre, restaurant.ciudad.pais.nombre) })
+	url = '%sformat=json&addressdetails=1&format=json&limit=1&%s'%(settings.OPENSTREETMAP_API, variables)
+	a = requests.get(url)
+	if(len(a.json())==0):
+		return None
+	for ind, t in enumerate(a.json()):
+		if ind == 0:
+			latitud = t["lat"]
+			longitud = t["lon"]
+	restaurant.latitud = latitud
+	restaurant.longitud = longitud
+	restaurant.last_google = datetime.datetime.now(tz=timezone.utc)
+	print("%s - get_complement_information_openstreetmap"%restaurant.latitud)
 	restaurant.save()
 
 def ponderaciones(city):

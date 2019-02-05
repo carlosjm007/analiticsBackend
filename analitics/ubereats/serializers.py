@@ -11,3 +11,21 @@ class CiudadRequestedSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CiudadRequested
 		fields = ('id', 'nombre','pais', 'like')
+
+class CiudadSerializer(serializers.ModelSerializer):
+	nombre = serializers.StringRelatedField()
+	class Meta:
+		model = CiudadRequested
+		fields = ('id', 'nombre')
+
+class PaisSerializer(serializers.ModelSerializer):
+	nombre = serializers.StringRelatedField()
+	ciudad = serializers.SerializerMethodField('TraeCiudades')
+	def TraeCiudades(self, objeto):
+		ciudades = CiudadRequested.objects.filter(pais=objeto)
+		serializer = CiudadSerializer(instance=ciudades, many=True)
+		return serializer.data
+
+	class Meta:
+		model = Pais
+		fields = ('id', 'nombre', 'ciudad')

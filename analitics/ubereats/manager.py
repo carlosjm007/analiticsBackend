@@ -90,8 +90,8 @@ class TiendaManager(models.Manager):
 		return self.filter(ciudad = pagina_ciudad)
 
 	def get_firts_restaurant_updated(self):
-		delta_30_days = datetime.now(tz=timezone.utc) - timedelta(days=30)
-		restaurants = self.exclude(Q(last_google__gte=delta_30_days) | ~Q(last_google=None))
+		delta_30_days = datetime.now(tz=timezone.utc) - timedelta(days=350)
+		restaurants = self.exclude(Q(last_google__gte=delta_30_days) | ~Q(last_google=None) | ~Q(latitud=0.0))
 		if len(restaurants) > 0:
 			return restaurants.first()
 		else:
