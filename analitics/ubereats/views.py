@@ -11,8 +11,8 @@ def ciudad_solicitada_list(request, format=None):
 	#######################################
 	##	Retorna todas las ciudades
 	if request.method == 'GET':
-		ciudades = CiudadRequested.objects.all()
-		serializer = CiudadRequestedSerializer(ciudades, many=True)
+		ciudades = CiudadRequested.objects.all().order_by("pais__nombre")
+		serializer = CiudadRequestedTwoSerializer(ciudades, many=True)
 		return Response(serializer.data)
 	#######################################
 	##	Crea una nueva ciudad solicitada
